@@ -8,12 +8,21 @@ BEGIN
 END;;
 
 DELIMITER ;;
--- Dodać obliczanie kwoty koszyka / całego zamówienia do kol. amount w orders
 CREATE TRIGGER update_basket_amount
 BEFORE INSERT ON basket
 FOR EACH ROW
 BEGIN
-	-- Kod
+    DECLARE total_amount DECIMAL(10, 2);
+    
+    -- Obliczanie sumy kwoty koszyka
+    SELECT SUM(price) INTO total_amount
+    FROM clothes
+    WHERE clothes_id IN (SELECT clothes_id FROM basket WHERE order_id = NEW.order_id);
+
+    -- Aktualizacja kwoty w tabeli orders
+    UPDATE orders
+    SET amount = total_amount
+    WHERE order_id = (SELECT order_id FROM basket WHERE order_id = NEW.order_id);
 END;
 
 DELIMITER ;;
