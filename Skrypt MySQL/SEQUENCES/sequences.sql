@@ -70,6 +70,165 @@ END;
 
 DELIMITER ;
 
--- Składanie zamówienia
 
 -- Wyszukiwanie produktów wg podanych kryteriów
+
+DELIMITER //
+
+CREATE PROCEDURE SearchProducts(
+    IN category VARCHAR(45),
+    IN size VARCHAR(10),
+    IN color VARCHAR(20),
+    IN minPrice DECIMAL(10,2),
+    IN maxPrice DECIMAL(10,2)
+)
+BEGIN
+    SELECT *
+    FROM Clothes
+    WHERE (category = category OR category IS NULL)
+      AND (size = size OR size IS NULL)
+      AND (color = color OR color IS NULL)
+      AND (price >= minPrice OR minPrice IS NULL)
+      AND (price <= maxPrice OR maxPrice IS NULL);
+END;
+//
+
+DELIMITER ;
+
+-- Zmiana danych osobowych
+
+DELIMITER //
+
+CREATE PROCEDURE UpdateUserDetails(
+    IN userId INT,
+    IN newEmail VARCHAR(255),
+    IN newPhone VARCHAR(15),
+    IN newName VARCHAR(45),
+    IN newSurname VARCHAR(45)
+)
+BEGIN
+    UPDATE Users
+    SET email = newEmail, phone = newPhone, name = newName, surname = newSurname
+    WHERE user_id = userId;
+END;
+//
+
+DELIMITER ;
+
+-- Dodanie produktu do zamówienia
+
+DELIMITER //
+
+CREATE PROCEDURE AddProductToOrder(
+    IN orderId INT,
+    IN productId INT
+)
+BEGIN
+    INSERT INTO basket(order_id, clothes_id)
+    VALUES (orderId, productId);
+END;
+//
+
+DELIMITER ;
+
+-- Anulowanie zamówienia
+
+DELIMITER //
+
+CREATE PROCEDURE CancelOrder(
+    IN orderId INT
+)
+BEGIN
+    DELETE FROM Orders
+    WHERE order_id = orderId;
+END;
+//
+
+DELIMITER ;
+
+-- Usunięcie konta
+DELIMITER //
+
+CREATE PROCEDURE DeleteUserAccount(
+    IN userId INT
+)
+BEGIN
+    DELETE FROM Users
+    WHERE user_id = userId;
+END;
+//
+
+DELIMITER ;
+
+-- Tworzenie nowego konta
+
+DELIMITER //
+
+CREATE PROCEDURE CreateUserAccount(
+    IN userLogin VARCHAR(20),
+    IN userPassword VARCHAR(20),
+    IN userEmail VARCHAR(255),
+    IN userPhone VARCHAR(15),
+    IN userName VARCHAR(45),
+    IN userSurname VARCHAR(45),
+    IN userRole ENUM('admin', 'employee', 'customer')
+)
+BEGIN
+    INSERT INTO Users(login, password, email, phone, name, surname, role)
+    VALUES (userLogin, userPassword, userEmail, userPhone, userName, userSurname, userRole);
+END;
+//
+
+DELIMITER ;
+
+-- Dodaj produkt
+DELIMITER //
+
+CREATE PROCEDURE AddProduct(
+	IN material varchar(25),
+    IN size varchar(10),
+    IN sex enum('male','female','unisex'),
+    IN price decimal(6,2),
+    IN collection_id int(10)
+)
+BEGIN
+	
+END;
+//
+
+DELIMITER ;
+
+-- Edytuj produkt
+DELIMITER //
+CREATE PROCEDURE EditProduct(
+    IN productId INT,
+    IN newMaterial VARCHAR(25),
+    IN newSize VARCHAR(10),
+    IN newSex ENUM('male', 'female', 'unisex'),
+    IN newPrice DECIMAL(6,2),
+    IN newCollectionId INT
+)
+BEGIN
+    -- Aktualizacja danych produktu
+    UPDATE Clothes
+    SET material = newMaterial, size = newSize, sex = newSex, 
+        price = newPrice, collection_id = newCollectionId
+    WHERE clothes_id = productId;
+END;
+//
+
+DELIMITER ;
+
+-- Usuń produkt
+DELIMITER //
+
+CREATE PROCEDURE DeleteProductById(
+    IN id int(10)
+)
+BEGIN
+	DELETE FROM Clothes
+    Where clothes_id = id;
+END;
+//
+
+DELIMITER ;
