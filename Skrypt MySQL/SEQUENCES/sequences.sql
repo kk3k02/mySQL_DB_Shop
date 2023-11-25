@@ -76,20 +76,20 @@ DELIMITER ;
 DELIMITER //
 
 CREATE PROCEDURE SearchProducts(
-    IN category VARCHAR(45),
+    IN material VARCHAR(25),
     IN size VARCHAR(10),
-    IN color VARCHAR(20),
-    IN minPrice DECIMAL(10,2),
-    IN maxPrice DECIMAL(10,2)
+    IN minPrice DECIMAL(6,2),
+    IN maxPrice DECIMAL(6,2),
+    IN sex enum('male','female','unisex')
 )
 BEGIN
     SELECT *
     FROM Clothes
-    WHERE (category = category OR category IS NULL)
+    WHERE (material = material OR material IS NULL)
       AND (size = size OR size IS NULL)
-      AND (color = color OR color IS NULL)
       AND (price >= minPrice OR minPrice IS NULL)
-      AND (price <= maxPrice OR maxPrice IS NULL);
+      AND (price <= maxPrice OR maxPrice IS NULL)
+      AND (sex = sex OR sex IS NULL);
 END;
 //
 
