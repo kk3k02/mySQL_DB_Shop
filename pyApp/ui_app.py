@@ -22,7 +22,7 @@ class UI_App:
 
         try:
             self.db.cursor.execute("SELECT * FROM Users WHERE login = %s AND password = %s", (user_login,
-                                                                                              user_password))
+                                                                                              hashed_password))
             user_data = self.db.cursor.fetchone()
             if user_data:
                 current_user = User(*user_data)
@@ -56,6 +56,7 @@ class UI_App:
         if user_role not in ['admin', 'employee', 'customer']:
             print("Invalid role. Please enter 'admin', 'employee', or 'customer'.")
             return
+
 
         try:
             self.db.cursor.callproc('CreateUserAccount',
